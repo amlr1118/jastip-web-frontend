@@ -1,0 +1,69 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material";
+
+// PAGES
+import Home from "./pages/Home";
+import Machine from "./pages/Machine";
+import Login from "./pages/Login";
+import Material from "./pages/Material";
+import Products from "./pages/Products";
+import Profile from "./pages/Profile";
+import Warehouse from "./pages/Warehouse";
+import BarangMasuk from "./pages/BarangMasuk";
+
+// COMPONENTS
+import Frame from "./components/Frame";
+import PrivateRoute from "./components/PrivateRoutes";
+import PublicRoute from "./components/PublicRoutes";
+
+const App = () => {
+  const theme = createTheme({
+    typography: {
+      fontFamily: ["Poppins", "sans-serif"].join(","),
+    },
+    palette: {
+      red: {
+        main: "#8E0000",
+      },
+    },
+  });
+
+  return (
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          {/* Route login tanpa Frame */}
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+
+          {/* Routes lain dibungkus dalam Frame */}
+          <Route
+            path="*"
+            element={
+              <PrivateRoute>
+                <Frame>
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/machine" element={<Machine />} />
+                    <Route path="/material" element={<Material />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/barang-masuk" element={<BarangMasuk />} />
+                  </Routes>
+                </Frame>
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
+};
+
+export default App;
