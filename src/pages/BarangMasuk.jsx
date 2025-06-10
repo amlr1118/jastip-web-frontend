@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  DataGrid,
-  GridToolbar,
-  GridActionsCellItem,
-} from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, GridActionsCellItem } from "@mui/x-data-grid";
 import {
   Typography,
   Button,
@@ -22,6 +18,8 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SettingsIcon from "@mui/icons-material/Settings";
+import InfoIcon from "@mui/icons-material/Info";
 
 const modalStyle = {
   position: "absolute",
@@ -38,31 +36,30 @@ const modalStyle = {
 export default function UserList() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [userForm, setUserForm] = useState({ 
-    id: null, name: "", email: "", password: "", });
-  const [errors, setErrors] = useState({});
-
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
-  const [deleteDialog, setDeleteDialog] = useState({ open: false, id: null });
+  const [detailModalOpen, setDetailModalOpen] = useState(false);
+  const [detailData, setDetailData] = useState(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const token = localStorage.getItem("token");
 
-  const fetchUsers = async () => {
+  const fecthBarang = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/user", {
+      const res = await axios.get("http://localhost:8000/api/data-barang", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      const usersWithId = res.data.map((user, index) => ({
-        ...user,
+      const barangs = Array.isArray(res.data.data) ? res.data.data : [];
+      const barangsWithId = barangs.map((barang, index) => ({
+        ...barang,
         id: index + 1,
-        originalId: user.id, // simpan ID asli dari database
+        originalId: barang.id, // simpan ID asli dari database
       }));
 
-      setRows(usersWithId);
+      setRows(barangsWithId);
     } catch (err) {
       console.error("Gagal memuat data user:", err);
     } finally {
@@ -71,97 +68,44 @@ export default function UserList() {
   };
 
   useEffect(() => {
-    fetchUsers();
+    fecthBarang();
   }, []);
 
-  const handleModalClose = () => {
-    setModalOpen(false);
-    setUserForm({ id: null, name: "", email: "", password: "", });
-    setErrors({});
-    setIsEdit(false);
-  };
-
-  const validate = () => {
-    const err = {};
-    if (!userForm.name.trim()) err.name = "Nama wajib diisi";
-    if (!userForm.email.trim()) {
-      err.email = "Email wajib diisi";
-    } else if (!/\S+@\S+\.\S+/.test(userForm.email)) {
-      err.email = "Format email tidak valid";
-    }
-    if (!userForm.password.trim()) err.password = "Password wajib diisi";
-    setErrors(err);
-    return Object.keys(err).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validate()) return;
-
+  const handleShowDetail = async (id) => {
     try {
-      if (isEdit) {
-        await axios.put(
-          `http://localhost:8000/api/users/${userForm.originalId}`,
-          userForm,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setSnackbar({ open: true, message: "User berhasil diupdate", severity: "success" });
-      } else {
-        await axios.post("http://localhost:8000/api/register", userForm, {
+      const res = await axios.get(
+        `http://localhost:8000/api/data-barang-all/${id}`,
+        {
           headers: { Authorization: `Bearer ${token}` },
-        });
-        setSnackbar({ open: true, message: "User berhasil ditambahkan", severity: "success" });
-      }
-
-      fetchUsers();
-      handleModalClose();
+        }
+      );
+      setDetailData(res.data.data); // sesuaikan dengan struktur respons dari API kamu
+      setDetailModalOpen(true);
     } catch (err) {
-      console.error("Gagal menyimpan user:", err);
-      setSnackbar({ open: true, message: "Gagal menyimpan user", severity: "error" });
-    }
-  };
-
-  const handleEdit = (params) => {
-    setIsEdit(true);
-    setUserForm({
-      id: params.id,
-      originalId: params.row.originalId,
-      name: params.row.name,
-      email: params.row.email,
-   
-    });
-    setModalOpen(true);
-  };
-
-  const handleDelete = async () => {
-    try {
-      await axios.delete(`http://localhost:8000/api/users/${deleteDialog.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      console.error("Gagal mengambil detail barang:", err);
+      setSnackbar({
+        open: true,
+        message: "Gagal mengambil detail barang",
+        severity: "error",
       });
-      setSnackbar({ open: true, message: "User berhasil dihapus", severity: "success" });
-      fetchUsers();
-    } catch (err) {
-      console.error("Gagal menghapus user:", err);
-      setSnackbar({ open: true, message: "Gagal menghapus user", severity: "error" });
-    } finally {
-      setDeleteDialog({ open: false, id: null });
     }
   };
 
   const columns = [
     { field: "id", headerName: "No", width: 70 },
-    { field: "name", headerName: "Username", width: 200 },
-    { field: "email", headerName: "Email", width: 250 },
+    { field: "kode_transaksi", headerName: "Kode", width: 200 },
+    { field: "nama_pengirim", headerName: "Nama Pengirim", width: 250 },
+    { field: "nomor_hp", headerName: "Nomor HP", width: 250 },
     {
       field: "actions",
       type: "actions",
       headerName: "Aksi",
       width: 120,
       getActions: (params) => [
-        <GridActionsCellItem icon={<EditIcon />} label="Edit" onClick={() => handleEdit(params)} />,
         <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label="Hapus"
-          onClick={() => setDeleteDialog({ open: true, id: params.row.originalId })}
+          icon={<InfoIcon />}
+          label="Edit"
+          onClick={() => handleShowDetail(params.row.originalId)}
         />,
       ],
     },
@@ -172,10 +116,6 @@ export default function UserList() {
       <Typography sx={{ fontSize: "1.5rem", fontWeight: "600" }}>
         Daftar Barang Masuk
       </Typography>
-
-      <Button variant="contained" onClick={() => setModalOpen(true)} sx={{ width: "200px", mb: 2 }}>
-        Tambah User
-      </Button>
 
       <div style={{ height: 400, width: "100%" }}>
         <DataGrid
@@ -191,71 +131,34 @@ export default function UserList() {
         />
       </div>
 
-      {/* Modal Tambah/Edit User */}
-      <Modal open={modalOpen} onClose={handleModalClose}>
+      <Modal open={detailModalOpen} onClose={() => setDetailModalOpen(false)}>
         <Box sx={modalStyle}>
-          <Typography variant="h6" mb={2}>
-            {isEdit ? "Edit User" : "Tambah User"}
+          <Typography variant="h6" gutterBottom>
+            Detail Barang
           </Typography>
-
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Nama"
-            name="name"
-            value={userForm.name}
-            onChange={(e) => setUserForm((prev) => ({ ...prev, name: e.target.value }))}
-            error={!!errors.name}
-            helperText={errors.name}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Email"
-            name="email"
-            value={userForm.email}
-            onChange={(e) => setUserForm((prev) => ({ ...prev, email: e.target.value }))}
-            error={!!errors.email}
-            helperText={errors.email}
-          />
-
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Password"
-            name="password"
-            value={userForm.password}
-            type="password"
-            onChange={(e) => setUserForm((prev) => ({ ...prev, password: e.target.value }))}
-            error={!!errors.password}
-            helperText={errors.password}
-          />
-
-          <Box display="flex" justifyContent="flex-end" mt={2} gap={1}>
-            <Button variant="outlined" onClick={handleModalClose}>Batal</Button>
-            <Button variant="contained" onClick={handleSubmit}>
-              {isEdit ? "Update" : "Simpan"}
-            </Button>
+          {detailData ? (
+            <>
+              <Typography>
+                Kode Transaksi: {detailData.kode_transaksi}
+              </Typography>
+              <Typography>Nama Pengirim: {detailData.nama_pengirim}</Typography>
+              <Typography>Nomor HP: {detailData.nomor_hp}</Typography>
+              <Typography>
+                Alamat Pengiriman: {detailData.alamat_pengiriman}
+              </Typography>
+              <Typography>
+                Tanggal Masuk:{" "}
+                {new Date(detailData.created_at).toLocaleString()}
+              </Typography>
+            </>
+          ) : (
+            <Typography>Memuat data...</Typography>
+          )}
+          <Box display="flex" justifyContent="flex-end" mt={2}>
+            <Button onClick={() => setDetailModalOpen(false)}>Tutup</Button>
           </Box>
         </Box>
       </Modal>
-
-      {/* Dialog Konfirmasi Hapus */}
-      <Dialog
-        open={deleteDialog.open}
-        onClose={() => setDeleteDialog({ open: false, id: null })}
-      >
-        <DialogTitle>Konfirmasi Hapus</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Apakah Anda yakin ingin menghapus user ini?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteDialog({ open: false, id: null })}>Batal</Button>
-          <Button color="error" onClick={handleDelete}>Hapus</Button>
-        </DialogActions>
-      </Dialog>
 
       {/* Snackbar Notifikasi */}
       <Snackbar
@@ -264,7 +167,10 @@ export default function UserList() {
         onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity={snackbar.severity} onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}>
+        <Alert
+          severity={snackbar.severity}
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
