@@ -48,7 +48,7 @@ export default function UserList() {
 
   const fecthBarang = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/data-barang", {
+      const res = await axios.get("http://localhost:8000/api/data-barang-masuk", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -79,7 +79,7 @@ export default function UserList() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setDetailData(res.data.data); // sesuaikan dengan struktur respons dari API kamu
+      setDetailData(res.data.data[0]); // sesuaikan dengan struktur respons dari API kamu
       setDetailModalOpen(true);
     } catch (err) {
       console.error("Gagal mengambil detail barang:", err);
@@ -90,6 +90,37 @@ export default function UserList() {
       });
     }
   };
+
+  const handleUpdateStatusBarang = async (id) => {
+  try {
+    const res = await axios.put(
+      `http://127.0.0.1:8000/api/update-status-barang/${id}`,
+      { status: 1 },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  
+    fecthBarang();
+    setDetailModalOpen(false);
+
+    // Optional: tampilkan notifikasi
+    setSnackbar({
+      open: true,
+      message: "Status barang berhasil diperbarui",
+      severity: "success",
+    });
+
+  } catch (err) {
+    console.error("Gagal memproses barang:", err);
+    setSnackbar({
+      open: true,
+      message: "Gagal memproses barang",
+      severity: "error",
+    });
+  }
+};
+
 
   const columns = [
     { field: "id", headerName: "No", width: 70 },
@@ -140,6 +171,7 @@ export default function UserList() {
             <>
               <Typography>
                 Kode Transaksi: {detailData.kode_transaksi}
+                {/* console.log(detailData.id); */}
               </Typography>
               <Typography>Nama Pengirim: {detailData.nama_pengirim}</Typography>
               <Typography>Nomor HP: {detailData.nomor_hp}</Typography>
@@ -155,6 +187,7 @@ export default function UserList() {
             <Typography>Memuat data...</Typography>
           )}
           <Box display="flex" justifyContent="flex-end" mt={2}>
+            <Button onClick={() => handleUpdateStatusBarang(detailData.id)}>Proses</Button>
             <Button onClick={() => setDetailModalOpen(false)}>Tutup</Button>
           </Box>
         </Box>

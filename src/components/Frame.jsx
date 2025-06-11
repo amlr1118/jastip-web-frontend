@@ -328,31 +328,31 @@ export default function Frame({ children }) {
             </ListItem>
           </Link>
           <Divider />
-          {/* <Link to={"/products"}>
+          {<Link to={"/barang-keluar"}>
             <ListItem disablePadding>
               <ListItemButton
                 sx={{
                   color: `${
-                    location.pathname === "/products" ? "blue" : "black"
+                    location.pathname === "/barang-keluar" ? "blue" : "black"
                   }`,
                   backgroundColor: `${
-                    location.pathname === "/products" ? "#dbdbdb" : ""
+                    location.pathname === "/barang-keluar" ? "#dbdbdb" : ""
                   }`,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     color: `${
-                      location.pathname === "/products" ? "blue" : "black"
+                      location.pathname === "/barang-keluar" ? "blue" : "black"
                     }`,
                   }}
                 >
                   <ProductionQuantityLimitsIcon />
                 </ListItemIcon>
-                <ListItemText>Products</ListItemText>
+                <ListItemText>Barang Keluar</ListItemText>
               </ListItemButton>
             </ListItem>
-          </Link> */}
+          </Link> }
           {/* <Divider />
           <ListItemButton onClick={handleClick} sx={{ color: "black" }}>
             <ListItemIcon sx={{ color: "black" }}>
