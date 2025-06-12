@@ -125,7 +125,7 @@ export default function UserList() {
 
   const columns = [
     { field: "id", headerName: "No", width: 70 },
-    { field: "kode_transaksi", headerName: "Kode", width: 200 },
+    { field: "kode_transaksi", headerName: "Kode Transaksi", width: 200 },
     { field: "nama_pengirim", headerName: "Nama Pengirim", width: 250 },
     { field: "nomor_hp", headerName: "Nomor HP", width: 250 },
     {

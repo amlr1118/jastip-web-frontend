@@ -9,9 +9,9 @@ import Material from "./pages/Material";
 import Products from "./pages/Products";
 import Profile from "./pages/Profile";
 import Warehouse from "./pages/Warehouse";
-import BarangMasuk from "./pages/BarangMasuk";
-import BarangKeluar from "./pages/BarangKeluar";
-import RiwayatBarangKeluar from "./pages/RiwayatBarangKeluar";
+import PaketMasuk from "./pages/PaketMasuk.jsx";
+import PengirimanPaket from "./pages/PengirimanPaket.jsx";
+import PengambilanPaket from "./pages/PengambilanPaket.jsx";
 
 // COMPONENTS
 import Frame from "./components/Frame";
@@ -56,9 +56,9 @@ const App = () => {
                     <Route path="/material" element={<Material />} />
 
                     <Route path="/profile" element={<Profile />} />
-                    <Route path="/barang-masuk" element={<BarangMasuk />} />
-                    <Route path="/barang-keluar" element={<BarangKeluar />} />
-                    <Route path="/riwayat-barang-keluar" element ={<RiwayatBarangKeluar />}/>
+                    <Route path="/paket-masuk" element={<PaketMasuk />} />
+                    <Route path="/pengiriman-paket" element={<PengirimanPaket />} />
+                    <Route path="/pengambilan-paket" element ={<PengambilanPaket />}/>
                   </Routes>
                 </Frame>
               </PrivateRoute>

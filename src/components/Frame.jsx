@@ -303,22 +303,22 @@ export default function Frame({ children }) {
             </ListItem>
           </Link>
           <Divider />
-          <Link to={"/barang-masuk"}>
+          <Link to={"/paket-masuk"}>
             <ListItem disablePadding>
               <ListItemButton
                 sx={{
                   color: `${
-                    location.pathname === "/barang-masuk" ? "blue" : "black"
+                    location.pathname === "/paket-masuk" ? "blue" : "black"
                   }`,
                   backgroundColor: `${
-                    location.pathname === "/barang-masuk" ? "#dbdbdb" : ""
+                    location.pathname === "/paket-masuk" ? "#dbdbdb" : ""
                   }`,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     color: `${
-                      location.pathname === "/barang-masuk" ? "blue" : "black"
+                      location.pathname === "/paket-masuk" ? "blue" : "black"
                     }`,
                   }}
                 >
@@ -329,22 +329,22 @@ export default function Frame({ children }) {
             </ListItem>
           </Link>
           <Divider />
-          {<Link to={"/barang-keluar"}>
+          {<Link to={"/pengiriman-paket"}>
             <ListItem disablePadding>
               <ListItemButton
                 sx={{
                   color: `${
-                    location.pathname === "/barang-keluar" ? "blue" : "black"
+                    location.pathname === "/pengiriman-paket" ? "blue" : "black"
                   }`,
                   backgroundColor: `${
-                    location.pathname === "/barang-keluar" ? "#dbdbdb" : ""
+                    location.pathname === "/pengiriman-paket" ? "#dbdbdb" : ""
                   }`,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     color: `${
-                      location.pathname === "/barang-keluar" ? "blue" : "black"
+                      location.pathname === "/pengiriman-paket" ? "blue" : "black"
                     }`,
                   }}
                 >
@@ -355,22 +355,22 @@ export default function Frame({ children }) {
             </ListItem>
           </Link> }
           <Divider />
-          {<Link to={"/riwayat-barang-keluar"}>
+          {<Link to={"/pengambilan-paket"}>
             <ListItem disablePadding>
               <ListItemButton
                 sx={{
                   color: `${
-                    location.pathname === "/riwayat-barang-keluar" ? "blue" : "black"
+                    location.pathname === "/pengambilan-paket" ? "blue" : "black"
                   }`,
                   backgroundColor: `${
-                    location.pathname === "/riwayat-barang-keluar" ? "#dbdbdb" : ""
+                    location.pathname === "/pengambilan-paket" ? "#dbdbdb" : ""
                   }`,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     color: `${
-                      location.pathname === "/riwayat-barang-keluar" ? "blue" : "black"
+                      location.pathname === "/pengambilan-paket" ? "blue" : "black"
                     }`,
                   }}
                 >
