@@ -57,7 +57,7 @@ export default function UserList() {
   const fecthBarang = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8000/api/data-barang-keluar",
+        "http://localhost:8000/api/pengiriman_paket",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -140,6 +140,31 @@ export default function UserList() {
     }
   };
 
+  const handleUpdateStatusPengiriman = async (id) => {
+    try {
+      const res = await axios.put(
+        `http://127.0.0.1:8000/api/update-status-pengiriman/${id}`,
+        { dikirim: 1 },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      // Optional: tampilkan notifikasi
+      // setSnackbar({
+      //   open: true,
+      //   message: "Paket berhasil diproses ke pengiriman",
+      //   severity: "success",
+      // });
+    } catch (err) {
+      console.error("Gagal memproses paket ke pengiriman:", err);
+      setSnackbar({
+        open: true,
+        message: "Gagal memproses paket ke pengiriman",
+        severity: "error",
+      });
+    }
+  };
+
   const handleTransaksiBarangKeluar = async () => {
     if (!validate()) return;
     try {
@@ -151,20 +176,21 @@ export default function UserList() {
         }
       );
 
+      handleUpdateStatusPengiriman(detailData.id);
       fecthBarang();
       setDetailModalOpen(false);
 
       // Optional: tampilkan notifikasi
       setSnackbar({
         open: true,
-        message: "Transaksi barang keluar berhasil",
+        message: "Transaksi pengiriman paket berhasil",
         severity: "success",
       });
     } catch (err) {
-      console.error("Gagal memproses barang:", err);
+      console.error("Gagal memproses pengiriman paket:", err);
       setSnackbar({
         open: true,
-        message: "Gagal memproses barang",
+        message: "Gagal memproses pengiriman paket",
         severity: "error",
       });
     }
@@ -172,8 +198,8 @@ export default function UserList() {
 
   const columns = [
     { field: "id", headerName: "No", width: 70 },
-    { field: "kode_transaksi", headerName: "Kode", width: 200 },
-    { field: "nama_pengirim", headerName: "Nama Pengirim", width: 250 },
+    { field: "kode_transaksi", headerName: "Kode Transaksi", width: 200 },
+    { field: "nama_pengirim", headerName: "Nama Penerima", width: 250 },
     { field: "nomor_hp", headerName: "Nomor HP", width: 250 },
     {
       field: "actions",
@@ -193,7 +219,7 @@ export default function UserList() {
   return (
     <div className="flex flex-col gap-2">
       <Typography sx={{ fontSize: "1.5rem", fontWeight: "600" }}>
-        Daftar Barang Keluar
+        Daftar Pengiriman Paket
       </Typography>
 
       <div style={{ height: 400, width: "100%" }}>
@@ -213,7 +239,7 @@ export default function UserList() {
       <Modal open={detailModalOpen} onClose={handleModalClose}>
         <Box sx={modalStyle}>
           <Typography variant="h6" mb={2}>
-            Transaksi Barang Keluar
+            Transaksi Pengiriman Paket
           </Typography>
 
           <TextField
@@ -235,7 +261,7 @@ export default function UserList() {
           <TextField
             fullWidth
             margin="normal"
-            label="Berat Barang"
+            label="Berat Barang(Kg)"
             name="berat"
             type="number"
             value={barangForm.berat}

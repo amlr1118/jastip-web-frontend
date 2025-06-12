@@ -19,6 +19,7 @@ import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
 import FactoryIcon from "@mui/icons-material/Factory";
 import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import InventoryIcon from "@mui/icons-material/Inventory";
 import AdfScannerIcon from "@mui/icons-material/AdfScanner";
 import CategoryIcon from "@mui/icons-material/Category";
@@ -323,7 +324,7 @@ export default function Frame({ children }) {
                 >
                   <FactoryIcon />
                 </ListItemIcon>
-                <ListItemText>Barang Masuk</ListItemText>
+                <ListItemText>Paket Masuk</ListItemText>
               </ListItemButton>
             </ListItem>
           </Link>
@@ -349,16 +350,42 @@ export default function Frame({ children }) {
                 >
                   <ProductionQuantityLimitsIcon />
                 </ListItemIcon>
-                <ListItemText>Barang Keluar</ListItemText>
+                <ListItemText>Pengiriman Paket</ListItemText>
               </ListItemButton>
             </ListItem>
           </Link> }
-          {/* <Divider />
-          <ListItemButton onClick={handleClick} sx={{ color: "black" }}>
+          <Divider />
+          {<Link to={"/riwayat-barang-keluar"}>
+            <ListItem disablePadding>
+              <ListItemButton
+                sx={{
+                  color: `${
+                    location.pathname === "/riwayat-barang-keluar" ? "blue" : "black"
+                  }`,
+                  backgroundColor: `${
+                    location.pathname === "/riwayat-barang-keluar" ? "#dbdbdb" : ""
+                  }`,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    color: `${
+                      location.pathname === "/riwayat-barang-keluar" ? "blue" : "black"
+                    }`,
+                  }}
+                >
+                  <WorkHistoryIcon />
+                </ListItemIcon>
+                <ListItemText>Pengambilan Paket</ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </Link> }
+          <Divider />
+          {/* <ListItemButton onClick={handleClick} sx={{ color: "black" }}>
             <ListItemIcon sx={{ color: "black" }}>
               <InventoryIcon />
             </ListItemIcon>
-            <ListItemText primary="Inventory" />
+            <ListItemText primary="Master Data" />
             {inventory ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Divider />
@@ -386,7 +413,7 @@ export default function Frame({ children }) {
                     >
                       <AdfScannerIcon />
                     </ListItemIcon>
-                    <ListItemText>Machine</ListItemText>
+                    <ListItemText>Paket Masuk</ListItemText>
                   </ListItemButton>
                 </ListItem>
               </Link>
@@ -413,7 +440,7 @@ export default function Frame({ children }) {
                     >
                       <CategoryIcon />
                     </ListItemIcon>
-                    <ListItemText>Material</ListItemText>
+                    <ListItemText>Paket Keluar</ListItemText>
                   </ListItemButton>
                 </ListItem>
               </Link>

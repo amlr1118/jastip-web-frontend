@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import Warehouse from "./pages/Warehouse";
 import BarangMasuk from "./pages/BarangMasuk";
 import BarangKeluar from "./pages/BarangKeluar";
+import RiwayatBarangKeluar from "./pages/RiwayatBarangKeluar";
 
 // COMPONENTS
 import Frame from "./components/Frame";
@@ -53,10 +54,11 @@ const App = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/machine" element={<Machine />} />
                     <Route path="/material" element={<Material />} />
-                   
+
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/barang-masuk" element={<BarangMasuk />} />
-                     <Route path="/barang-keluar" element={<BarangKeluar />} />
+                    <Route path="/barang-keluar" element={<BarangKeluar />} />
+                    <Route path="/riwayat-barang-keluar" element ={<RiwayatBarangKeluar />}/>
                   </Routes>
                 </Frame>
               </PrivateRoute>

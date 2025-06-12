@@ -49,7 +49,7 @@ export default function UserList() {
   const fecthBarang = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:8000/api/data-barang-masuk",
+        "http://127.0.0.1:8000/api/data-riwayat-barang-keluar",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -64,7 +64,7 @@ export default function UserList() {
 
       setRows(barangsWithId);
     } catch (err) {
-      console.error("Gagal memuat data user:", err);
+      console.error("Gagal memuat data barang:", err);
     } finally {
       setLoading(false);
     }
@@ -77,7 +77,7 @@ export default function UserList() {
   const handleShowDetail = async (id) => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/data-barang-all/${id}`,
+        `http://localhost:8000/api/detail-riwayat-barang-keluar/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -94,40 +94,16 @@ export default function UserList() {
     }
   };
 
-  const handleUpdateStatusBarang = async (id) => {
-    try {
-      const res = await axios.put(
-        `http://127.0.0.1:8000/api/update-status-barang/${id}`,
-        { status: 1 },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      fecthBarang();
-      setDetailModalOpen(false);
-
-      // Optional: tampilkan notifikasi
-      setSnackbar({
-        open: true,
-        message: "Paket berhasil diproses ke pengiriman",
-        severity: "success",
-      });
-    } catch (err) {
-      console.error("Gagal memproses paket ke pengiriman:", err);
-      setSnackbar({
-        open: true,
-        message: "Gagal memproses paket ke pengiriman",
-        severity: "error",
-      });
-    }
-  };
-
   const columns = [
-    { field: "id", headerName: "No", width: 70 },
-    { field: "kode_transaksi", headerName: "Kode", width: 200 },
-    { field: "nama_pengirim", headerName: "Nama Pengirim", width: 250 },
-    { field: "nomor_hp", headerName: "Nomor HP", width: 250 },
+    { field: "id", headerName: "No", width: 50 },
+    { field: "kode_trans", headerName: "Kode Transaksi", width: 200 },
+    { field: "nama_pengirim", headerName: "Nama Penerima", width: 250 },
+    { field: "nama_kapal", headerName: "Nama Kapal", width: 200 },
+    { field: "estimasi_tiba", headerName: "Estimasi Tiba", width: 250 },
+    // { field: "berat", headerName: "Berat(Kg)", width: 70 },
+    // { field: "ongkir", headerName: "Ongkos Kirim", width: 70 },
+    // { field: "nama_kapal", headerName: "Nama Kapal", width: 100 },
+    // { field: "estimasi_tiba", headerName: "estimasi_tiba", width: 100 },
     {
       field: "actions",
       type: "actions",
@@ -146,7 +122,7 @@ export default function UserList() {
   return (
     <div className="flex flex-col gap-2">
       <Typography sx={{ fontSize: "1.5rem", fontWeight: "600" }}>
-        Daftar Paket Masuk
+        Daftar Paket Terkirim
       </Typography>
 
       <div style={{ height: 400, width: "100%" }}>
@@ -166,7 +142,7 @@ export default function UserList() {
       <Modal open={detailModalOpen} onClose={() => setDetailModalOpen(false)}>
         <Box sx={modalStyle}>
           <Typography variant="h6" gutterBottom>
-            Detail Paket
+            Detail Barang
           </Typography>
           {detailData ? (
             <>
@@ -177,10 +153,22 @@ export default function UserList() {
               <Typography>Nama Pengirim: {detailData.nama_pengirim}</Typography>
               <Typography>Nomor HP: {detailData.nomor_hp}</Typography>
               <Typography>
-                Alamat Pengiriman: {detailData.alamat_pengiriman}
+                Alamat Penerima: {detailData.alamat_pengiriman}
               </Typography>
               <Typography>
-                Tanggal Masuk:{" "}
+                Berat(Kg): {detailData.berat}
+              </Typography>
+              <Typography>
+                Ongkir: {detailData.ongkir}
+              </Typography>
+              <Typography>
+                Nama Kapal: {detailData.nama_kapal}
+              </Typography>
+              <Typography>
+                Estimasi_tiba: {detailData.estimasi_tiba}
+              </Typography>
+              <Typography>
+                Tanggal Pengiriman:{" "}
                 {new Date(detailData.created_at).toLocaleString()}
               </Typography>
             </>
@@ -188,9 +176,6 @@ export default function UserList() {
             <Typography>Memuat data...</Typography>
           )}
           <Box display="flex" justifyContent="flex-end" mt={2}>
-            <Button onClick={() => handleUpdateStatusBarang(detailData.id)}>
-              Proses
-            </Button>
             <Button onClick={() => setDetailModalOpen(false)}>Tutup</Button>
           </Box>
         </Box>
