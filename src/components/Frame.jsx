@@ -227,18 +227,18 @@ export default function Frame({ children }) {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                <Link to={"/profile"}>
-                  <MenuItem onClick={handleCloseProfile}>
-                    <Avatar /> Profile
-                  </MenuItem>
-                </Link>
-                <Divider />
-                <MenuItem onClick={handleCloseProfile}>
-                  <ListItemIcon>
-                    <Settings fontSize="small" />
-                  </ListItemIcon>
-                  Settings
-                </MenuItem>
+                {/*<Link to={"/profile"}>*/}
+                {/*  <MenuItem onClick={handleCloseProfile}>*/}
+                {/*    <Avatar /> Profile*/}
+                {/*  </MenuItem>*/}
+                {/*</Link>*/}
+                {/*<Divider />*/}
+                {/*<MenuItem onClick={handleCloseProfile}>*/}
+                {/*  <ListItemIcon>*/}
+                {/*    <Settings fontSize="small" />*/}
+                {/*  </ListItemIcon>*/}
+                {/*  Settings*/}
+                {/*</MenuItem>*/}
                 <Link to={"/"}>
                   <MenuItem
                     onClick={() => {

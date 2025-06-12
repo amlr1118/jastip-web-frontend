@@ -3,12 +3,8 @@ import { ThemeProvider, createTheme } from "@mui/material";
 
 // PAGES
 import Home from "./pages/Home";
-import Machine from "./pages/Machine";
 import Login from "./pages/Login";
 import Material from "./pages/Material";
-import Products from "./pages/Products";
-import Profile from "./pages/Profile";
-import Warehouse from "./pages/Warehouse";
 import PaketMasuk from "./pages/PaketMasuk.jsx";
 import PengirimanPaket from "./pages/PengirimanPaket.jsx";
 import PengambilanPaket from "./pages/PengambilanPaket.jsx";
@@ -52,10 +48,7 @@ const App = () => {
                 <Frame>
                   <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/machine" element={<Machine />} />
                     <Route path="/material" element={<Material />} />
-
-                    <Route path="/profile" element={<Profile />} />
                     <Route path="/paket-masuk" element={<PaketMasuk />} />
                     <Route path="/pengiriman-paket" element={<PengirimanPaket />} />
                     <Route path="/pengambilan-paket" element ={<PengambilanPaket />}/>
