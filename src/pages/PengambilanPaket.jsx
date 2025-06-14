@@ -20,6 +20,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SettingsIcon from "@mui/icons-material/Settings";
 import InfoIcon from "@mui/icons-material/Info";
+import CheckIcon from "@mui/icons-material/Check";
 
 const modalStyle = {
   position: "absolute",
@@ -43,6 +44,8 @@ export default function UserList() {
     message: "",
     severity: "success",
   });
+
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, id: null });
 
   const token = localStorage.getItem("token");
 
@@ -84,6 +87,7 @@ export default function UserList() {
       );
       setDetailData(res.data.data[0]); // sesuaikan dengan struktur respons dari API kamu
       setDetailModalOpen(true);
+      console.log(detailData);
     } catch (err) {
       console.error("Gagal mengambil detail barang:", err);
       setSnackbar({
@@ -94,28 +98,79 @@ export default function UserList() {
     }
   };
 
+  const ambilPaket = async () => {
+    const today = new Date().toISOString().split("T")[0]; // Format YYYY-MM-DD
+    try {
+      await axios.put(
+        `http://localhost:8000/api/ambil-paket/${deleteDialog.id}`,
+        { status: 1, diambil: 1, tanggal_diambil: today },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setSnackbar({
+        open: true,
+        message: "Paket berhasil diambil",
+        severity: "success",
+      });
+      fecthBarang();
+    } catch (err) {
+      console.error("Gagal mengambil paket:", err);
+      setSnackbar({
+        open: true,
+        message: "Gagal mengambil paket",
+        severity: "error",
+      });
+    } finally {
+      setDeleteDialog({ open: false, id: null });
+    }
+  };
+
   const columns = [
     { field: "id", headerName: "No", width: 50 },
     { field: "kode_trans", headerName: "Kode Transaksi", width: 200 },
     { field: "nama_pengirim", headerName: "Nama Penerima", width: 250 },
     { field: "nama_kapal", headerName: "Nama Kapal", width: 200 },
     { field: "estimasi_tiba", headerName: "Estimasi Tiba", width: 250 },
-    // { field: "berat", headerName: "Berat(Kg)", width: 70 },
-    // { field: "ongkir", headerName: "Ongkos Kirim", width: 70 },
-    // { field: "nama_kapal", headerName: "Nama Kapal", width: 100 },
-    // { field: "estimasi_tiba", headerName: "estimasi_tiba", width: 100 },
+    {
+      field: "status",
+      headerName: "Status Paket",
+      width: 180,
+      renderCell: (params) => (
+        <span>
+          {params.value === 1 ? "Paket sudah diambil" : "Paket belum diambil"}
+        </span>
+      ),
+    },
     {
       field: "actions",
       type: "actions",
       headerName: "Aksi",
       width: 120,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<InfoIcon />}
-          label="Edit"
-          onClick={() => handleShowDetail(params.row.originalId)}
-        />,
-      ],
+      getActions: (params) => {
+        const actions = [
+          <GridActionsCellItem
+            icon={<InfoIcon />}
+            label="Detail"
+            onClick={() => handleShowDetail(params.row.originalId)}
+          />,
+        ];
+
+        // Tampilkan tombol "AmbilPaket" hanya jika status === 0
+        if (params.row.status === 0) {
+          actions.push(
+            <GridActionsCellItem
+              icon={<CheckIcon />}
+              label="AmbilPaket"
+              onClick={() =>
+                setDeleteDialog({ open: true, id: params.row.originalId })
+              }
+            />
+          );
+        }
+
+        return actions;
+      },
     },
   ];
 
@@ -155,21 +210,16 @@ export default function UserList() {
               <Typography>
                 Alamat Penerima: {detailData.alamat_pengiriman}
               </Typography>
-              <Typography>
-                Berat(Kg): {detailData.berat}
-              </Typography>
-              <Typography>
-                Ongkir: {detailData.ongkir}
-              </Typography>
-              <Typography>
-                Nama Kapal: {detailData.nama_kapal}
-              </Typography>
-              <Typography>
-                Estimasi_tiba: {detailData.estimasi_tiba}
-              </Typography>
+              <Typography>Berat(Kg): {detailData.berat}</Typography>
+              <Typography>Ongkir: {detailData.ongkir}</Typography>
+              <Typography>Nama Kapal: {detailData.nama_kapal}</Typography>
+              <Typography>Estimasi_tiba: {detailData.estimasi_tiba}</Typography>
               <Typography>
                 Tanggal Pengiriman:{" "}
                 {new Date(detailData.created_at).toLocaleString()}
+              </Typography>
+              <Typography>
+                Tanggal diterima: {detailData.tanggal_diambil}
               </Typography>
             </>
           ) : (
@@ -180,6 +230,25 @@ export default function UserList() {
           </Box>
         </Box>
       </Modal>
+
+      {/* Dialog Konfirmasi Hapus */}
+      <Dialog
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, id: null })}
+      >
+        <DialogTitle>Konfirmasi Penerima Paket</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Yakin mengambil paket?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialog({ open: false, id: null })}>
+            Tutup
+          </Button>
+          <Button color="error" onClick={ambilPaket}>
+            Ambil Paket
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Snackbar Notifikasi */}
       <Snackbar

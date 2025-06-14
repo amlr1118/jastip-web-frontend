@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  DataGrid,
-  GridToolbar,
-  GridActionsCellItem,
-} from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, GridActionsCellItem } from "@mui/x-data-grid";
 import {
   Typography,
   Button,
@@ -41,11 +37,19 @@ export default function UserList() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [userForm, setUserForm] = useState({ 
-    id: null, name: "", email: "", password: "", });
+  const [userForm, setUserForm] = useState({
+    id: null,
+    name: "",
+    email: "",
+    password: "",
+  });
   const [errors, setErrors] = useState({});
 
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const [deleteDialog, setDeleteDialog] = useState({ open: false, id: null });
 
   const token = localStorage.getItem("token");
@@ -76,7 +80,7 @@ export default function UserList() {
 
   const handleModalClose = () => {
     setModalOpen(false);
-    setUserForm({ id: null, name: "", email: "", password: "", });
+    setUserForm({ id: null, name: "", email: "", password: "" });
     setErrors({});
     setIsEdit(false);
   };
@@ -104,19 +108,31 @@ export default function UserList() {
           userForm,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setSnackbar({ open: true, message: "User berhasil diupdate", severity: "success" });
+        setSnackbar({
+          open: true,
+          message: "User berhasil diupdate",
+          severity: "success",
+        });
       } else {
         await axios.post("http://localhost:8000/api/register", userForm, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setSnackbar({ open: true, message: "User berhasil ditambahkan", severity: "success" });
+        setSnackbar({
+          open: true,
+          message: "User berhasil ditambahkan",
+          severity: "success",
+        });
       }
 
       fetchUsers();
       handleModalClose();
     } catch (err) {
       console.error("Gagal menyimpan user:", err);
-      setSnackbar({ open: true, message: "Gagal menyimpan user", severity: "error" });
+      setSnackbar({
+        open: true,
+        message: "Gagal menyimpan user",
+        severity: "error",
+      });
     }
   };
 
@@ -127,7 +143,6 @@ export default function UserList() {
       originalId: params.row.originalId,
       name: params.row.name,
       email: params.row.email,
-   
     });
     setModalOpen(true);
   };
@@ -137,11 +152,19 @@ export default function UserList() {
       await axios.delete(`http://localhost:8000/api/users/${deleteDialog.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setSnackbar({ open: true, message: "User berhasil dihapus", severity: "success" });
+      setSnackbar({
+        open: true,
+        message: "User berhasil dihapus",
+        severity: "success",
+      });
       fetchUsers();
     } catch (err) {
       console.error("Gagal menghapus user:", err);
-      setSnackbar({ open: true, message: "Gagal menghapus user", severity: "error" });
+      setSnackbar({
+        open: true,
+        message: "Gagal menghapus user",
+        severity: "error",
+      });
     } finally {
       setDeleteDialog({ open: false, id: null });
     }
@@ -157,11 +180,17 @@ export default function UserList() {
       headerName: "Aksi",
       width: 120,
       getActions: (params) => [
-        <GridActionsCellItem icon={<EditIcon />} label="Edit" onClick={() => handleEdit(params)} />,
+        <GridActionsCellItem
+          icon={<EditIcon />}
+          label="Edit"
+          onClick={() => handleEdit(params)}
+        />,
         <GridActionsCellItem
           icon={<DeleteIcon />}
           label="Hapus"
-          onClick={() => setDeleteDialog({ open: true, id: params.row.originalId })}
+          onClick={() =>
+            setDeleteDialog({ open: true, id: params.row.originalId })
+          }
         />,
       ],
     },
@@ -173,7 +202,11 @@ export default function UserList() {
         Daftar User
       </Typography>
 
-      <Button variant="contained" onClick={() => setModalOpen(true)} sx={{ width: "200px", mb: 2 }}>
+      <Button
+        variant="contained"
+        onClick={() => setModalOpen(true)}
+        sx={{ width: "200px", mb: 2 }}
+      >
         Tambah User
       </Button>
 
@@ -204,7 +237,9 @@ export default function UserList() {
             label="Nama"
             name="name"
             value={userForm.name}
-            onChange={(e) => setUserForm((prev) => ({ ...prev, name: e.target.value }))}
+            onChange={(e) =>
+              setUserForm((prev) => ({ ...prev, name: e.target.value }))
+            }
             error={!!errors.name}
             helperText={errors.name}
           />
@@ -214,7 +249,9 @@ export default function UserList() {
             label="Email"
             name="email"
             value={userForm.email}
-            onChange={(e) => setUserForm((prev) => ({ ...prev, email: e.target.value }))}
+            onChange={(e) =>
+              setUserForm((prev) => ({ ...prev, email: e.target.value }))
+            }
             error={!!errors.email}
             helperText={errors.email}
           />
@@ -226,13 +263,17 @@ export default function UserList() {
             name="password"
             value={userForm.password}
             type="password"
-            onChange={(e) => setUserForm((prev) => ({ ...prev, password: e.target.value }))}
+            onChange={(e) =>
+              setUserForm((prev) => ({ ...prev, password: e.target.value }))
+            }
             error={!!errors.password}
             helperText={errors.password}
           />
 
           <Box display="flex" justifyContent="flex-end" mt={2} gap={1}>
-            <Button variant="outlined" onClick={handleModalClose}>Batal</Button>
+            <Button variant="outlined" onClick={handleModalClose}>
+              Batal
+            </Button>
             <Button variant="contained" onClick={handleSubmit}>
               {isEdit ? "Update" : "Simpan"}
             </Button>
@@ -252,8 +293,12 @@ export default function UserList() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialog({ open: false, id: null })}>Batal</Button>
-          <Button color="error" onClick={handleDelete}>Hapus</Button>
+          <Button onClick={() => setDeleteDialog({ open: false, id: null })}>
+            Batal
+          </Button>
+          <Button color="error" onClick={handleDelete}>
+            Hapus
+          </Button>
         </DialogActions>
       </Dialog>
 
@@ -264,7 +309,10 @@ export default function UserList() {
         onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity={snackbar.severity} onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}>
+        <Alert
+          severity={snackbar.severity}
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>

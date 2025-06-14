@@ -50,6 +50,9 @@ export default function UserList() {
     nama_kapal: "",
     estimasi_tiba: "",
   });
+
+  const [deleteDialog, setDeleteDialog] = useState({ open: false, id: null });
+
   const [errors, setErrors] = useState({});
 
   const token = localStorage.getItem("token");
@@ -196,6 +199,33 @@ export default function UserList() {
     }
   };
 
+  const batalaknPengiriman = async () => {
+    try {
+      await axios.put(
+        `http://localhost:8000/api/batalkan-pengiriman-paket/${deleteDialog.id}`,
+        {status : 0},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setSnackbar({
+        open: true,
+        message: "Pengiriman paket berhasil dibatalkan",
+        severity: "success",
+      });
+      fecthBarang();
+    } catch (err) {
+      console.error("Gagal membatalkan pengiriman paket:", err);
+      setSnackbar({
+        open: true,
+        message: "Gagal membatalkan pengiriman paket",
+        severity: "error",
+      });
+    } finally {
+      setDeleteDialog({ open: false, id: null });
+    }
+  };
+
   const columns = [
     { field: "id", headerName: "No", width: 70 },
     { field: "kode_transaksi", headerName: "Kode Transaksi", width: 200 },
@@ -209,8 +239,16 @@ export default function UserList() {
       getActions: (params) => [
         <GridActionsCellItem
           icon={<InfoIcon />}
-          label="Edit"
+          label="Info"
           onClick={() => handleShowDetail(params.row.originalId)}
+        />,
+
+        <GridActionsCellItem
+          icon={<DeleteIcon />}
+          label="Hapus"
+          onClick={() =>
+            setDeleteDialog({ open: true, id: params.row.originalId })
+          }
         />,
       ],
     },
@@ -326,6 +364,27 @@ export default function UserList() {
           </Box>
         </Box>
       </Modal>
+
+      {/* Dialog Konfirmasi Hapus */}
+      <Dialog
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, id: null })}
+      >
+        <DialogTitle>Konfirmasi Hapus</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Apakah Anda yakin membatalkan pengiriman paket ini?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialog({ open: false, id: null })}>
+            Tutup
+          </Button>
+          <Button color="error" onClick={batalaknPengiriman}>
+            Batalkan Pengiriman
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Snackbar Notifikasi */}
       <Snackbar
